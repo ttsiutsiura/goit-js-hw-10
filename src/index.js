@@ -8,7 +8,7 @@ const DEBOUNCE_DELAY = 300;
 
 inputRef.addEventListener('input', debounce(onInput, DEBOUNCE_DELAY));
 
-function onInput(e) {
+async function onInput(e) {
   const query = e.target.value.trim();
   if (query === '') {
     clearInnerHTML(countryListRef);
@@ -16,7 +16,12 @@ function onInput(e) {
     return;
   }
 
-  fetchCountries(query).then(renderMarkup).catch(notify);
+  try {
+    const countries = await fetchCountries(query);
+    renderMarkup(countries);
+  } catch (error) {
+    notify(error);
+  }
 }
 
 function clearInnerHTML(el) {
